@@ -17,6 +17,14 @@ ResHackBase::ResHackBase(void* thReadRes, void* myReadRes, MallocType thMalloc) 
 
 void* ResHackBase::MyReadRes(const char* _fileName, DWORD* bytesRead, BOOL isFile)
 {
+	if (isFile) // Not in .dat file
+	{
+		m_readResHook.Disable();
+		void* buffer = CallOriginalReadRes(_fileName, bytesRead, isFile);
+		m_readResHook.Enable();
+		return buffer;
+	}
+
 	string fileName = _fileName;
 	size_t pos = fileName.rfind('\\');
 	if (pos != string::npos)

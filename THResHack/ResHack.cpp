@@ -12,7 +12,7 @@ ResHackFastcall::ResHackFastcall(uintptr_t thReadRes, uintptr_t thMalloc) :
 {
 }
 
-void* __fastcall ResHackFastcall::MyReadRes(const char* fileName, DWORD* bytesRead, BOOL isFile)
+void* ResHackFastcall::MyReadRes(const char* fileName, DWORD* bytesRead, BOOL isFile)
 {
 	auto& instance = (ResHackFastcall&)ResHackFactory::GetInstance().GetResHackInstance();
 	return instance.ResHackBase::MyReadRes(fileName, bytesRead, isFile);
@@ -97,7 +97,7 @@ ResHackTH07::ResHackTH07(uintptr_t thReadRes, uintptr_t thMalloc, uintptr_t byte
 {
 }
 
-void* __fastcall ResHackTH07::MyReadRes(const char *fileName, BOOL isFile)
+void* ResHackTH07::MyReadRes(const char *fileName, BOOL isFile)
 {
 	auto& instance = (ResHackTH07&)ResHackFactory::GetInstance().GetResHackInstance();
 	return instance.ResHackBase::MyReadRes(fileName, instance.m_bytesRead, isFile);
@@ -119,7 +119,7 @@ ResHackTH06::ResHackTH06(uintptr_t thReadRes, uintptr_t thMalloc, uintptr_t byte
 {
 }
 
-void* __cdecl ResHackTH06::MyReadRes(const char *fileName, BOOL isFile)
+void* ResHackTH06::MyReadRes(const char *fileName, BOOL isFile)
 {
 	auto& instance = (ResHackTH06&)ResHackFactory::GetInstance().GetResHackInstance();
 	return instance.ResHackBase::MyReadRes(fileName, instance.m_bytesRead, isFile);
