@@ -31,7 +31,7 @@ private:
 	ResHackFactory(const ResHackFactory&) = delete;
 
 	// signatureAddr, signature, generator
-	typedef std::tuple<const void*, const std::vector<BYTE>*,
+	typedef std::tuple<const void*, const std::vector<BYTE>&,
 		std::function<std::unique_ptr<ResHackBase>()> > Generator;
 	std::vector<Generator> m_generators;
 
@@ -54,7 +54,7 @@ public:
 		AddGenerator(uintptr_t signatureAddr, const std::vector<BYTE>& signature, Args... args)
 		{
 			auto& generators = ResHackFactory::GetInstance().m_generators;
-			generators.emplace_back(std::make_tuple((void*)signatureAddr, &signature,
+			generators.emplace_back(std::forward_as_tuple((void*)signatureAddr, signature,
 				[=] { return std::make_unique<T>(args...); }));
 		}
 	};

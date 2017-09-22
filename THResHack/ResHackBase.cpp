@@ -63,7 +63,7 @@ ResHackBase& ResHackFactory::GetResHackInstance()
 	{
 		for (const auto& i : m_generators)
 		{
-			if (memcmp(get<0>(i), &get<1>(i)->front(), get<1>(i)->size() * sizeof(BYTE)) == 0)
+			if (memcmp(get<0>(i), &get<1>(i).front(), get<1>(i).size() * sizeof(BYTE)) == 0)
 			{
 				m_resHackInstance = get<2>(i)();
 				break;
