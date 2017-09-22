@@ -3,6 +3,7 @@
 #include <memory>
 #include <functional>
 #include <vector>
+#include <tuple>
 
 
 class ResHackBase
@@ -29,19 +30,9 @@ private:
 	ResHackFactory() = default;
 	ResHackFactory(const ResHackFactory&) = delete;
 
-	struct Generator
-	{
-		const void* const signatureAddr = NULL;
-		const std::vector<BYTE>* signature = NULL;
-		std::function<std::unique_ptr<ResHackBase>()> generator;
-
-		Generator(const void* _signatureAddr, decltype(signature) _signature, decltype(generator) _generator) :
-			signatureAddr(_signatureAddr),
-			signature(_signature),
-			generator(_generator)
-		{
-		}
-	};
+	// signatureAddr, signature, generator
+	typedef std::tuple<const void*, const std::vector<BYTE>*,
+		std::function<std::unique_ptr<ResHackBase>()> > Generator;
 	std::vector<Generator> m_generators;
 
 	std::unique_ptr<ResHackBase> m_resHackInstance;
@@ -63,7 +54,8 @@ public:
 		AddGenerator(uintptr_t signatureAddr, const std::vector<BYTE>& signature, Args... args)
 		{
 			auto& generators = ResHackFactory::GetInstance().m_generators;
-			generators.emplace_back((void*)signatureAddr, &signature, [=] { return std::make_unique<T>(args...); });
+			generators.emplace_back(std::make_tuple((void*)signatureAddr, &signature,
+				[=] { return std::make_unique<T>(args...); }));
 		}
 	};
 };
