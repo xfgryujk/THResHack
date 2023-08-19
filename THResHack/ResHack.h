@@ -2,6 +2,22 @@
 #include "ResHackBase.h"
 
 
+
+class ResHackFastcallTH19 final : public ResHackBase
+{
+protected:
+	typedef void* (__fastcall* ReadResType)(const char* fileName, DWORD* bytesRead, BOOL isFile);
+
+
+public:
+	ResHackFastcallTH19(uintptr_t thReadRes, uintptr_t thMalloc);
+
+protected:
+	static void* __fastcall MyReadRes_W(const char* fileName, DWORD* bytesRead, BOOL isFile);
+	static void* __fastcall MyReadRes(const char* fileName, DWORD* bytesRead, BOOL isFile);
+	virtual void* CallOriginalReadRes(const char* fileName, DWORD* bytesRead, BOOL isFile) override;
+};
+
 class ResHackFastcall final : public ResHackBase
 {
 protected:
