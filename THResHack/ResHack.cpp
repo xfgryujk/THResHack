@@ -129,3 +129,50 @@ void* ResHackTH06::CallOriginalReadRes(const char* fileName, DWORD* bytesRead, B
 {
 	return m_readResHook.GetOriginalFunction<ReadResType>()(fileName, isFile);
 }
+
+// --------------------------------------------------------------------------------------
+// ResHackFastcallW
+// --------------------------------------------------------------------------------------
+
+ResHackFastcallTH19::ResHackFastcallTH19(uintptr_t thReadRes, uintptr_t thMalloc) :
+	ResHackBase((void*)thReadRes, MyReadRes, (MallocType)thMalloc)
+{
+
+}
+
+__declspec(naked) void* __fastcall ResHackFastcallTH19::MyReadRes(const char* fileName, DWORD* bytesRead, BOOL isFile)
+{
+	__asm
+	{ 
+		push ebp
+		mov ebp, esp
+		push[ebp+0x8]//isFile
+		call MyReadRes_W
+		pop ebp
+		ret 0
+	}
+}
+
+void* __fastcall ResHackFastcallTH19::MyReadRes_W(const char* fileName, DWORD* bytesRead, BOOL isFile)
+{
+	auto& instance = (ResHackFastcallTH19&)ResHackFactory::GetInstance().GetResHackInstance();
+	auto res = instance.ResHackBase::MyReadRes(fileName, bytesRead, isFile);
+	return res;
+}
+
+void* ResHackFastcallTH19::CallOriginalReadRes(const char* fileName, DWORD* bytesRead, BOOL isFile)
+{
+	auto func=m_readResHook.GetOriginalFunction<ReadResType>();
+	void* r = nullptr;
+	__asm
+	{
+		mov ecx,fileName
+		mov edx,bytesRead
+		mov eax,func
+		push isFile
+		call eax
+		add esp,4
+		mov r,eax
+	}
+	return r;
+}
